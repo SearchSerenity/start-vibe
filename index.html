@@ -4,79 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ma Page de Démarrage</title>
-    <style>
-        /* CSS : La mise en forme */
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f0f2f5;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-        }
-
-        .search-container {
-            background: white;
-            padding: 2rem;
-            border-radius: 10px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-            width: 100%;
-            max-width: 500px;
-            text-align: center;
-        }
-
-        h1 {
-            color: #333;
-            margin-bottom: 1.5rem;
-            font-size: 1.5rem;
-        }
-
-        .input-group {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 10px;
-        }
-
-        input[type="text"] {
-            flex-grow: 1;
-            padding: 12px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            font-size: 16px;
-            outline: none;
-            transition: border-color 0.3s;
-        }
-
-        input[type="text"]:focus {
-            border-color: #007bff;
-        }
-
-        select {
-            padding: 12px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            background-color: #fff;
-            font-size: 16px;
-            cursor: pointer;
-        }
-
-        button {
-            width: 100%;
-            padding: 12px;
-            background-color: #007bff;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            font-size: 16px;
-            cursor: pointer;
-            transition: background-color 0.3s;
-        }
-
-        button:hover {
-            background-color: #0056b3;
-        }
-    </style>
+    <!-- Lien vers le fichier CSS externe -->
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
@@ -94,21 +23,16 @@
     </div>
 
     <script>
-        // JavaScript : La logique
+        // JavaScript : La logique reste ici pour simplifier l'exécution
         function performSearch() {
-            // 1. Récupérer la valeur saisie
             const query = document.getElementById('searchInput').value;
-            
-            // 2. Récupérer le moteur sélectionné
             const engine = document.getElementById('engineSelect').value;
             
-            // Vérifier si le champ n'est pas vide
             if (query.trim() === "") {
                 alert("Veuillez entrer un terme de recherche.");
                 return;
             }
 
-            // 3. Construire l'URL selon le moteur
             let url = "";
             
             if (engine === "google") {
@@ -119,11 +43,9 @@
                 url = "https://duckduckgo.com/?q=" + encodeURIComponent(query);
             }
 
-            // 4. Ouvrir la recherche dans un nouvel onglet
             window.open(url, '_blank');
         }
 
-        // Permettre de lancer la recherche avec la touche "Entrée"
         document.getElementById('searchInput').addEventListener('keypress', function (e) {
             if (e.key === 'Enter') {
                 performSearch();
