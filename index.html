@@ -5,13 +5,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ma Page de Démarrage</title>
     
-    <!-- 1. Chargement du fichier de paramètres (DONNÉES) -->
+    <!-- 1. Chargement du fichier de paramètres -->
     <script src="config.js"></script>
     
-    <!-- 2. Chargement du fichier de style (DESIGN) -->
+    <!-- 2. Chargement du fichier de style -->
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+
+    <!-- Éléments pour le fond d'écran -->
+    <div id="background-image"></div>
+    <div id="background-overlay"></div>
 
     <div class="search-container">
         <h1>Recherche Web</h1>
@@ -27,7 +31,7 @@
         </div>
         <button class="search-btn" onclick="performSearch()">Rechercher</button>
 
-        <!-- Conteneur où les boutons seront générés automatiquement -->
+        <!-- Conteneur des raccourcis -->
         <div id="shortcutsContainer" class="shortcuts-grid"></div>
     </div>
 
@@ -61,32 +65,54 @@
         });
 
         // --- LOGIQUE DE GÉNÉRATION DES RACCOURCIS ---
-        // Cette fonction s'exécute au chargement de la page
         document.addEventListener('DOMContentLoaded', function() {
             const container = document.getElementById('shortcutsContainer');
             
-            // Vérifie que la variable config est bien chargée
             if (typeof shortcutsConfig !== 'undefined') {
-                
-                // Boucle sur chaque élément du tableau config
                 shortcutsConfig.forEach(item => {
-                    // Création du lien HTML
                     const link = document.createElement('a');
                     link.href = item.url;
                     link.className = 'shortcut-btn';
-                    link.target = '_blank'; // Ouvre dans un nouvel onglet
-                    
-                    // Contenu du bouton (une icône générique + le titre)
+                    link.target = '_blank';
                     link.innerHTML = `
                         <span class="shortcut-icon">🔗</span>
                         <span>${item.title}</span>
                     `;
-                    
-                    // Ajout au conteneur
                     container.appendChild(link);
                 });
+            }
+
+            // --- LOGIQUE DU FOND D'ÉCRAN UNSPLASH ---
+            if (typeof unsplashConfig !== 'undefined' && unsplashConfig.accessKey !== "VOTRE_CLÉ_ICI") {
+                const bgElement = document.getElementById('background-image');
+                
+                // Construction de l'URL API
+                // On ajoute un timestamp pour éviter que le navigateur ne mette l'image en cache
+                const timestamp = new Date().getTime();
+                const keywordParam = unsplashConfig.keyword ? `&query=${encodeURIComponent(unsplashConfig.keyword)}` : '';
+                const imageUrl = `https://api.unsplash.com/photos/random?client_id=${unsplashConfig.accessKey}&orientation=landscape${keywordParam}&t=${timestamp}`;
+
+                // Utilisation de fetch pour récupérer l'URL de l'image (l'API renvoie un objet JSON avec l'URL)
+                fetch(imageUrl)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Erreur API Unsplash');
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        // Appliquer l'image de fond
+                        bgElement.style.backgroundImage = `url('${data.urls.full}')`;
+                        console.log("Fond d'écran chargé :", data.alt_description);
+                    })
+                    .catch(error => {
+                        console.error("Problème lors du chargement du fond d'écran:", error);
+                        // En cas d'erreur (clé invalide ou quota dépassé), on met un fond gris par défaut
+                        bgElement.style.backgroundColor = "#333";
+                        alert("Erreur de chargement du fond d'écran. Vérifiez votre clé API dans config.js.");
+                    });
             } else {
-                console.error("Le fichier config.js n'a pas été chargé ou la variable est manquante.");
+                console.log("Configuration Unsplash manquante ou clé non définie.");
             }
         });
     </script>
